@@ -34,17 +34,17 @@
     </style>
 	<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz9bgHzM1VXQqLiyXo228jkeTzSm6mZT8&sensor=false&libraries=geometry,places&callback=initMap" async defer></script>  
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyBz9bgHzM1VXQqLiyXo228jkeTzSm6mZT8&libraries=geometry,places&callback=initMap" async defer></script>  
   </head>
   <body>
      
 	<div class="iframe-container" id="map">
-    <iframe width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+    <iframe id="map" class="embed-responsive-item" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
     </div>
 	<div class="container">
 	<div class="form-group">
 	  <label for="usr">Direccion: (Calle número, localidad)</label>
-	  <input type="text" class="form-control" id="address" value="">
+	  <input type="text" class="form-control" id="address" onclick="codeAddress();">
 	</div>
 	<div class="form-group">
 	<label for="sel1">Cantidad de Centros más cercanos:</label>
@@ -89,13 +89,13 @@ var locations = [
 	];
 	
 	var geocoder = null;
+	// var iconMarker="https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png";
 	var customerMarker = null;
-      var map;
-      var infowindow;
-      var markers = [];
+    var map;
+    var infowindow;
+    var markers = [];
 
       function initMap() {
-        	  
         var castelar = {lat: -34.640125, lng: -58.641260};
             geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById('map'), {
@@ -103,23 +103,23 @@ var locations = [
 		  center: castelar
         });
 		
-		document.getElementById('info').innerHTML = "Se encontraron " + locations.length + " ubicaciones<br>";
+		document.getElementById('info').innerHTML = "Se encontraron " + locations.length + " Centros de Salud<br>";
 		var bounds = new google.maps.LatLngBounds();
 		for (i = 0; i < locations.length; i++) {
-        var coordLat = locations[i][2];
-        var coordLon = locations[i][3];
-        var pt = new google.maps.LatLng(parseFloat(coordLat), parseFloat(coordLon));
-        bounds.extend(pt);
-		var marker
-		
-        marker = new google.maps.Marker({
-            position: pt,
-            map: map,
-            icon: locations[i][4],
-            address: locations[i][1],
-            title: locations[i][0],
-            html: locations[i][0] + "<br>" + locations[i][1]
-        });
+			var coordLat = locations[i][2];
+			var coordLon = locations[i][3];
+			var pt = new google.maps.LatLng(parseFloat(coordLat), parseFloat(coordLon));
+			bounds.extend(pt);
+			var marker
+			
+			marker = new google.maps.Marker({
+				position: pt,
+				map: map,
+				icon: locations[i][4],
+				address: locations[i][1],
+				title: locations[i][0],
+				html: locations[i][0] + "<br>" + locations[i][1]
+			});
         markers.push(marker);
         google.maps.event.addListener(marker, 'click', (function (marker, i) {
             return function () {
@@ -142,29 +142,9 @@ var locations = [
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 		  }
 		}
-      function callback(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            createMarker(results[i]);
-          }
-        }
-      }
 
-      function createMarker(place) {
-        var placeLoc = place.geometry.location;
-        var marker = new google.maps.Marker({
-          map: map,
-          position: place.geometry.location
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(place.name);
-          infowindow.open(map, this);
-        });
-      }
-	 
-	
 	function codeAddress() {
+	infowindow.close();
     var address = document.getElementById('address').value + ', Buenos Aires';
     geocoder.geocode({
         'address': address
@@ -181,8 +161,14 @@ var locations = [
             }
             var numResults = parseInt(document.getElementById('numberResults').value);
             closest = findClosestN(results[0].geometry.location, numResults);
-            for (var i = 0; i < closest.length; i++) {
+            // dibujo los centros más cercanos obtenidos
+			for (var i = 0; i < closest.length; i++) {
                 closest[i].setMap(map);
+				// si el usuario pide solo 1 le muestro el popup por default
+				if (closest.length == 1) {
+					infowindow.setContent(closest[i].html);
+					infowindow.open(map, closest[i]);
+				}
             }
         } else {
             alert('Geocode was not successful for the following reason: ' + status);
