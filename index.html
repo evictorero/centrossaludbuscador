@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Buscador Salas Morón CAPS</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <title>Centros de Salud Morón</title>
+    <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">    
 	<style>
 		.iframe-container{
@@ -43,11 +43,11 @@
     </div>
 	<div class="container">
 	<div class="form-group">
-	  <label for="usr">Direccion:</label>
+	  <label for="usr">Direccion: (Calle número, localidad)</label>
 	  <input type="text" class="form-control" id="address" value="">
 	</div>
 	<div class="form-group">
-	<label for="sel1">Cantidad de lugares mas cercanos:</label>
+	<label for="sel1">Cantidad de Centros más cercanos:</label>
 	  <select class="form-control" id="numberResults">
 		<option>1</option>
 		<option>2</option>
@@ -165,7 +165,7 @@ var locations = [
 	 
 	
 	function codeAddress() {
-    var address = document.getElementById('address').value;
+    var address = document.getElementById('address').value + ', Buenos Aires';
     geocoder.geocode({
         'address': address
     }, function (results, status) {
