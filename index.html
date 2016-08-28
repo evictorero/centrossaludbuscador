@@ -3,9 +3,8 @@
   <head>
     <title>Buscador Salas Morón CAPS</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <style>
-
+    <meta charset="utf-8">    
+	<style>
 		.iframe-container{
 			position: relative;
 			width: 100%;
@@ -33,10 +32,45 @@
 		  background: #eee;
 		}
     </style>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz9bgHzM1VXQqLiyXo228jkeTzSm6mZT8&sensor=false&libraries=geometry,places&callback=initMap" async defer></script>  
+  </head>
+  <body>
+     
+	<div class="iframe-container" id="map">
+    <iframe width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+    </div>
+	<div class="container">
+	<div class="form-group">
+	  <label for="usr">Direccion:</label>
+	  <input type="text" class="form-control" id="address" value="">
+	</div>
+	<div class="form-group">
+	<label for="sel1">Cantidad de lugares mas cercanos:</label>
+	  <select class="form-control" id="numberResults">
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+		</select>	
+	</div>
+	<div class="form-group">
+		<button type="button" class="btn btn-primary" onclick="codeAddress();">Buscar</button>
+	</div>
+	<div class="form-group">
+		<button type="button" class="btn btn-primary" onclick="initMap();">Ver Todos</button>
+	</div>
+	
+	<p id="info" class="text-primary"></p>
+	<div>
+  </body>
+</html>
+	
     <script>
-      // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-    
+     
+   // ubicación de las centros de salud extraidos de http://www.moron.gov.ar/nuestra-gestion/salud/centros-de-salud-y-vacunatorio/	 
 var locations = [
     ["Santa Laura", "Saavedra 1265, Morón, Buenos Aires, Argentina", "-34.650007", "-58.576862", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
     ["Salud Mental y Adicciones", "Boatti 263, Morón, Buenos Aires, Argentina", "-34.651560", "-58.616272", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
@@ -170,40 +204,4 @@ function findClosestN(pt, numberOfResults) {
 function sortByDist(a, b) {
     return (a.distance - b.distance)
 }
-
 </script>
-	<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz9bgHzM1VXQqLiyXo228jkeTzSm6mZT8&sensor=false&libraries=geometry,places&callback=initMap" async defer></script>  
-  </head>
-  <body>
-     
-	<div class="iframe-container" id="map">
-    <iframe width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-    </div>
-	<div class="container">
-	<div class="form-group">
-	  <label for="usr">Direccion:</label>
-	  <input type="text" class="form-control" id="address" value="">
-	</div>
-	<div class="form-group">
-	<label for="sel1">Cantidad de lugares mas cercanos:</label>
-	  <select class="form-control" id="numberResults">
-		<option>1</option>
-		<option>2</option>
-		<option>3</option>
-		<option>4</option>
-		<option>5</option>
-		</select>	
-	</div>
-	<div class="form-group">
-		<button type="button" class="btn btn-primary" onclick="codeAddress();">Buscar</button>
-	</div>
-	<div class="form-group">
-		<button type="button" class="btn btn-primary" onclick="initMap();">Ver Todos</button>
-	</div>
-	
-	<p id="info" class="text-primary"></p>
-	<div>
-  </body>
-</html>
