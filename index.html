@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Buscador Salas Morón CAPS</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+
+		.iframe-container{
+			position: relative;
+			width: 100%;
+			padding-bottom: 30%; /* Ratio 16:9 ( 100%/16*9 = 56.25% ) */
+		}
+		.iframe-container > *{
+			display: block;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			width: 100%;
+		}
+
+		/* Demo styles */
+		body{
+			padding: 50px;
+		}
+		.iframe-container{
+		  margin-bottom: 50px;
+		  background: #eee;
+		}
+    </style>
+    <script>
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+    
+var locations = [
+    ["Santa Laura", "Saavedra 1265, Morón, Buenos Aires, Argentina", "-34.650007", "-58.576862", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+    ["Salud Mental y Adicciones", "Boatti 263, Morón, Buenos Aires, Argentina", "-34.651560", "-58.616272", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Villa Rivadavia", "O. Magnasco 933, Haedo, Buenos Aires, Argentina", "-34.648660", "-58.602136", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+    ["Dr. Springolo", "Gral. Galán 655, El Palomar, Buenos Aires, Argentina", "-34.608688", "-58.596344", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Malvinas Argentinas", "Marconi y Namuncurá del barrio Carlos Gardel, El Palomar, Buenos Aires, Argentina", "-34.626512", "-58.579549", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Dr. Luis R. Winter", "R. Castillo 151, El Palomar, Buenos Aires, Argentina", "-34.612733", "-58.600252", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+    ["Loma Verde", "Curuchet 2550, Castelar, Buenos Aires, Argentina", "-34.634431", "-58.641777", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Dr. Gelpi", "Miró y Betbeder, Castelar, Buenos Aires, Argentina", "-34.686434", "-58.652358", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Juana Azurduy", "Berlín 3870, Castelar, Buenos Aires, Argentina", "-34.676486", "-58.663707", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Dr. Monte", "Cartagena y Grito de Alcorta, Morón, Buenos Aires, Argentina", "-34.681992", "-58.631923", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Pte. Ibañez", "Avellaneda 2647, Morón, Buenos Aires, Argentina", "-34.676932", "-58.619264", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Azucena Villaflor", "Vinara 2237, Morón, Buenos Aires, Argentina", "-34.698479", "-58.645449", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Almafuerte", "G. Pérez 131, Morón, Buenos Aires, Argentina", "-34.651054", "-58.606500", "http://maps.google.com/mapfiles/ms/icons/blue.png"],
+	["Mercedes Sosa", "Av. Eva Perón (ex Pierrestegui) y Baradero, Morón, Buenos Aires, Argentina", "-34.689276", "-58.636731", "http://maps.google.com/mapfiles/ms/icons/blue.png"]
+	];
+	
+	var geocoder = null;
+	var customerMarker = null;
+      var map;
+      var infowindow;
+      var markers = [];
+
+      function initMap() {
+        	  
+        var castelar = {lat: -34.640125, lng: -58.641260};
+            geocoder = new google.maps.Geocoder();
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 0,
+		  center: castelar
+        });
+		
+		document.getElementById('info').innerHTML = "Se encontraron " + locations.length + " ubicaciones<br>";
+		var bounds = new google.maps.LatLngBounds();
+		for (i = 0; i < locations.length; i++) {
+        var coordLat = locations[i][2];
+        var coordLon = locations[i][3];
+        var pt = new google.maps.LatLng(parseFloat(coordLat), parseFloat(coordLon));
+        bounds.extend(pt);
+		var marker
+		
+        marker = new google.maps.Marker({
+            position: pt,
+            map: map,
+            icon: locations[i][4],
+            address: locations[i][1],
+            title: locations[i][0],
+            html: locations[i][0] + "<br>" + locations[i][1]
+        });
+        markers.push(marker);
+        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+            return function () {
+                infowindow.setContent(marker.html);
+                infowindow.open(map, marker);
+            }
+        })
+        (marker, i)
+		)
+		}
+        map.fitBounds(bounds);
+		
+        infowindow = new google.maps.InfoWindow();
+        
+      }
+		function toggleBounce() {
+		  if (marker.getAnimation() !== null) {
+			marker.setAnimation(null);
+		  } else {
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+		  }
+		}
+      function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+        }
+      }
+
+      function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(place.name);
+          infowindow.open(map, this);
+        });
+      }
+	 
+	
+	function codeAddress() {
+    var address = document.getElementById('address').value;
+    geocoder.geocode({
+        'address': address
+    }, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            if (customerMarker) customerMarker.setMap(null);
+            customerMarker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+            });
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            var numResults = parseInt(document.getElementById('numberResults').value);
+            closest = findClosestN(results[0].geometry.location, numResults);
+            for (var i = 0; i < closest.length; i++) {
+                closest[i].setMap(map);
+            }
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
+    });
+}
+
+function findClosestN(pt, numberOfResults) {
+    var closest = [];
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].distance = google.maps.geometry.spherical.computeDistanceBetween(pt, markers[i].getPosition());
+        markers[i].setMap(null);
+        closest.push(markers[i]);
+    }
+    closest.sort(sortByDist);
+    return closest.splice(0,numberOfResults);
+}
+
+function sortByDist(a, b) {
+    return (a.distance - b.distance)
+}
+
+</script>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+     
+	<div class="iframe-container" id="map">
+    <iframe width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+    </div>
+	<div class="container">
+	<div class="form-group">
+	  <label for="usr">Direccion:</label>
+	  <input type="text" class="form-control" id="address" value="Loreto 2467, Castelar, Buenos Aires">
+	</div>
+	<div class="form-group">
+	<label for="sel1">Cantidad de lugares mas cercanos:</label>
+	  <select class="form-control" id="numberResults">
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+		</select>	
+	</div>
+	<div class="form-group">
+		<button type="button" class="btn btn-primary" onclick="codeAddress();">Buscar</button>
+	</div>
+	<div class="form-group">
+		<button type="button" class="btn btn-primary" onclick="initMap();">Ver Todos</button>
+	</div>
+	
+	<p id="info" class="text-primary"></p>
+	<div>
+	<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry,places&callback=initMap" async defer></script>
+	
+  </body>
+</html>
