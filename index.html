@@ -174,6 +174,7 @@ function sortByDist(a, b) {
 </script>
 	<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIaZ3tefMl6tWDb6YLSRtmm9PCQi7pzRU&sensor=false&libraries=geometry,places&callback=initMap" async defer></script>  
   </head>
   <body>
      
@@ -183,7 +184,7 @@ function sortByDist(a, b) {
 	<div class="container">
 	<div class="form-group">
 	  <label for="usr">Direccion:</label>
-	  <input type="text" class="form-control" id="address" value="Loreto 2467, Castelar, Buenos Aires">
+	  <input type="text" class="form-control" id="address" value="">
 	</div>
 	<div class="form-group">
 	<label for="sel1">Cantidad de lugares mas cercanos:</label>
@@ -204,7 +205,5 @@ function sortByDist(a, b) {
 	
 	<p id="info" class="text-primary"></p>
 	<div>
-	<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry,places&callback=initMap" async defer></script>
-	
   </body>
 </html>
